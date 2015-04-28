@@ -1,0 +1,91 @@
+﻿.bootstrap-grid {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.bootstrap-grid-container {
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  
+  border: 1px solid #ddd;
+  -ms-border-radius: 4px;
+      border-radius: 4px;
+}
+
+.bootstrap-grid-container table {
+  table-layout: fixed;
+  word-wrap: break-word;
+  margin: 0;
+
+  border: 0;
+  border-bottom: 1px solid #ddd;
+
+  -ms-border-radius: 0;
+      border-radius: 0;
+}
+
+.bootstrap-grid-container table th { vertical-align: middle; }
+
+.bootstrap-grid-container th:first-child,
+.bootstrap-grid-container td:first-child {
+  border-left: 0 !important;
+
+  -ms-border-bottom-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+}
+
+.bootstrap-grid-header { 
+  overflow: hidden;
+  font-size: 11px;
+}
+
+.bootstrap-grid-header table {
+  table-layout: fixed;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.bootstrap-grid-body {
+  height: 100%;
+  overflow: auto;
+  position: relative;
+  font-size: 11px;
+}
+
+.bootstrap-grid-pagination {
+  height: 50px;
+  margin: 5px;
+  margin-bottom: 0;
+}
+
+.bootstrap-grid-pagination select {
+  display: block;
+  float: left;
+  width: auto;
+}
+
+.bootstrap-grid-pagination .pagination {
+  float: right;
+  margin: 0;
+}
+
+.bootstrap-grid-toolbar {
+  margin: 5px;
+  margin-top: 0;
+}
+
+.bootstrap-grid-contextmenu {
+  position: absolute;
+  display: none;
+  z-index: 300;
+}
+
+.bootstrap-grid-contextmenu ul {
+  position: static;
+  display: block;
+  z-index: 300;
+}
+
+.bootstrap-grid-contextmenu a { cursor: pointer; }

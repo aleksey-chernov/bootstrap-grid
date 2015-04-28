@@ -1,0 +1,30 @@
+{
+  "name": "bootstrap-grid",
+  "description" : "Simple lightweight datagrid, based on bootstrap 2.",
+  "version": "0.1",
+  "authors": [
+    "Chernov Aleksey <chernov.a.vl@gmail.com>"
+  ],
+  "main": [
+    "js/bootstrap-grid.js",
+    "css/bootstrap-grid.css",
+    "css/bootstrap-grid-filter.css"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery" : "^1.8.2",
+    "bootstrap" : "~2.3.2",
+    "bootstrap-datepicker" : "latest",
+    "bootstrap-daterangepicker" : "latest",
+    "bootstrap-multiselect" : "latest"
+
+  },
+  "ignore": []
+}
