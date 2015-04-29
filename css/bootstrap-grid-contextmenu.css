@@ -1,0 +1,15 @@
+.bootstrap-grid-contextmenu {
+  position: absolute;
+  z-index: 300;
+
+  display: none;
+}
+
+.bootstrap-grid-contextmenu ul {
+  position: static;
+  z-index: 300;
+
+  display: block;
+}
+
+.bootstrap-grid-contextmenu a { cursor: pointer; }

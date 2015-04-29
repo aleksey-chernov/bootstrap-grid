@@ -21,13 +21,13 @@
 
   $.extend($.fn.bootstrapGrid.defaultSettings, {
     editableContext: false,
-    OnRowContextAdd: function() {
+    onRowContextAdd: function() {
       return false;
     },
-    OnRowContextEdit: function(item) {
+    onRowContextEdit: function(item) {
       return false;
     },
-    OnRowContextRemove: function(item) {
+    onRowContextRemove: function(item) {
       return false;
     }
   });
@@ -73,28 +73,27 @@
   Display.prototype.initContextMenu = function () {
     var that = this;
 
-    this.contextMenu = $("<div class='dropdown'>")
-      .addClass("bootstrap-grid-contextmenu");
+    this.contextMenu = $("<div class='dropdown bootstrap-grid-contextmenu'>");
 
     var ul = $("<ul class='dropdown-menu' role='menu' />")
       .appendTo(this.contextMenu);
 
     $("<li>")
       .append($("<a tabindex='-1'>" + Grid.locales.add + "</a>").click(function() {
-        if (that.grid.settings.OnRowContextAdd)
-          that.grid.settings.OnRowContextAdd.call(null);
+        if (that.grid.settings.onRowContextAdd)
+          that.grid.settings.onRowContextAdd.call(null);
       }))
       .appendTo(ul);
     $("<li>")
       .append($("<a tabindex='-1'>" + Grid.locales.edit + "</a>").click(function() {
-        if (that.grid.settings.OnRowContextEdit)
-          that.grid.settings.OnRowContextEdit.call(null, that.grid.selectedItem);
+        if (that.grid.settings.onRowContextEdit)
+          that.grid.settings.onRowContextEdit.call(null, that.grid.selectedItem);
       }))
       .appendTo(ul);
     $("<li>")
       .append($("<a tabindex='-1'>" + Grid.locales.remove + "</a>").click(function() {
-        if (that.grid.settings.OnRowContextRemove)
-          that.grid.settings.OnRowContextRemove.call(null, that.grid.selectedItem);
+        if (that.grid.settings.onRowContextRemove)
+          that.grid.settings.onRowContextRemove.call(null, that.grid.selectedItem);
       }))
       .appendTo(ul);
 

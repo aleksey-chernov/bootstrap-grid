@@ -5,15 +5,24 @@
   function TextFilter(settings, container, onChange) {
     this.field = settings.field;
 
-    this.input = $("<input type='text'>")
-      .addClass("input-medium search-query")
-      .attr("placeholder", settings.title)
+    this.input = $("<input class='input-medium search-query' type='text' placeholder='" + settings.title + "'>")
       .on("input", onChange)
-      .appendTo(container);
+      .appendTo(container)
+      .placeholder();
   };
 
-  TextFilter.prototype.getValue = function() {
-    return this.input.val();
+  TextFilter.prototype.getValue = function () {
+    if (!this.hidden) {
+      return this.input.val();
+    }
+  };
+  TextFilter.prototype.show = function() {
+    this.input.css("display", "inline-block");
+    this.hidden = false;
+  };
+  TextFilter.prototype.hide = function() {
+    this.input.css("display", "none");
+    this.hidden = true;
   };
 
   function DateFilter(settings, container, onChange) {
@@ -22,19 +31,18 @@
     this.date = null;
 
     var that = this;
-    this.input = $("<input type='text' readonly='readonly'>")
-      .addClass("input-medium search-query")
+    this.input = $("<input class='input-medium search-query' type='text' readonly='readonly' placeholder='" + settings.title + "'>")
       .css("cursor", "pointer")
-      .attr("placeholder", settings.title)
       .appendTo(container)
+      .placeholder()
       .datepicker({
-        format: "dd.mm.yyyy",
-        language: "ru",
+        format: settings.format,
+        language: settings.language,
         autoclose: true,
         todayHighlight: true,
         clearBtn: true
       })
-      .on("changeDate", function (event) {
+      .on("changeDate", function(event) {
         var year = event.date.getFullYear();
         var month = that.padMonth(event.date.getMonth() + 1);
         var day = event.date.getDate();
@@ -50,8 +58,18 @@
   DateFilter.prototype.padMonth = function(n) {
     return (n < 10) ? ("0" + n) : n;
   };
-  DateFilter.prototype.getValue = function() {
-    return this.date;
+  DateFilter.prototype.getValue = function () {
+    if (!this.hidden) {
+      return this.date;
+    }
+  };
+  DateFilter.prototype.show = function() {
+    this.input.css("display", "inline-block");
+    this.hidden = false;
+  };
+  DateFilter.prototype.hide = function() {
+    this.input.css("display", "none");
+    this.hidden = true;
   };
 
   function DateRangeFilter(settings, container, onChange) {
@@ -60,17 +78,16 @@
     this.startDate = this.endDate = null;
 
     var that = this;
-    this.input = $("<input type='text' name='daterange' readonly='readonly'>")
-      .addClass("input-medium search-query")
+    this.input = $("<input class='input-medium search-query' type='text' name='daterange' placeholder='" + settings.title + "' readonly='readonly'>")
       .css("cursor", "pointer")
-      .attr("placeholder", settings.title)
       .appendTo(container)
+      .placeholder()
       .daterangepicker({
-        format: "DD.MM.YYYY",
+        format: settings.format,
         startDate: moment().subtract(29, "days"),
         endDate: moment(),
-        minDate: "01.01.2010",
-        maxDate: "31.12.2020",
+        minDate: settings.minDate,
+        maxDate: settings.maxDate,
         showDropdowns: true,
         showWeekNumbers: false,
         timePicker: false,
@@ -83,13 +100,13 @@
         cancelClass: "btn-default",
         separator: "-",
         locale: {
-          applyLabel: "Применить",
-          cancelLabel: "Отмена",
+          applyLabel: Grid.locales.dateRangeApply,
+          cancelLabel: Grid.locales.dateRangeCancel,
           fromLabel: "",
           toLabel: "",
           customRangeLabel: "Custom",
-          daysOfWeek: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
-          monthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+          daysOfWeek: Grid.locales.dateRangeDaysOfWeek,
+          monthNames: Grid.locales.dateRangeMonthNames,
           firstDay: 1
         }
       })
@@ -108,19 +125,28 @@
       });
   };
 
-  DateRangeFilter.prototype.getValue = function() {
-    return { startDate: this.startDate, endDate: this.endDate }
+  DateRangeFilter.prototype.getValue = function () {
+    if (!this.hidden) {
+      return { startDate: this.startDate, endDate: this.endDate }
+    }
+  };
+  DateRangeFilter.prototype.show = function() {
+    this.input.css("display", "inline-block");
+    this.hidden = false;
+  };
+  DateRangeFilter.prototype.hide = function() {
+    this.input.css("display", "none");
+    this.hidden = true;
   };
 
   function MultiselectFilter(settings, container, onChange) {
     this.field = settings.field;
 
-    this.input = $("<select multiple>")
+    this.input = $("<select class='input-medium search-query' multiple>")
       .appendTo(container)
-      .addClass("input-medium search-query")
       .multiselect({
         buttonWidth: "150px",
-        buttonText: function() { return "Загрузка..."; }
+        buttonText: function() { return Grid.locales.multiselectLoad; }
       });
 
     $.ajax({
@@ -129,7 +155,7 @@
       success: function(data) {
         var that = this;
         $.each(data.List, function(index, item) {
-          $("<option value='" + item.Value + "'>" + item.Text + "</select>")
+          $("<option value='" + item.Value + "'>" + item.Text + "</option>")
             .appendTo(that.input);
         });
         that.input
@@ -155,17 +181,31 @@
               }
             }
           });
+
+        if (that.hidden) {
+          that.input.next().css("display", "none");
+        }
       }
     });
   };
 
-  MultiselectFilter.prototype.getValue = function() {
-    var result = [];
-    $("option:selected", this.input).each(function() {
-      result.push($(this).val());
-    });
+  MultiselectFilter.prototype.getValue = function () {
+    if (!this.hidden) {
+      var result = [];
+      $("option:selected", this.input).each(function() {
+        result.push($(this).val());
+      });
 
-    return result;
+      return result;
+    }
+  };
+  MultiselectFilter.prototype.show = function() {
+    this.input.next().css("display", "inline-block");
+    this.hidden = false;
+  };
+  MultiselectFilter.prototype.hide = function() {
+    this.input.next().css("display", "none");
+    this.hidden = true;
   };
 
   $.extend($.fn.bootstrapGrid.defaultSettings, {
@@ -173,7 +213,11 @@
   });
 
   $.extend($.fn.bootstrapGrid.locales, {
-
+    dateRangeDaysOfWeek: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+    dateRangeApply: "Применить",
+    dateRangeCancel: "Отмена",
+    dateRangeMonthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
+    multiselectLoad: "Загрузка..."
   });
 
   var Display = $.fn.bootstrapGrid.display,
@@ -183,7 +227,12 @@
     field: undefined,
     title: undefined,
     url: undefined,
-    type: "text"
+    type: "text",
+    visible: false,
+    format: "DD.MM.YYYY",
+    minDate: undefined,
+    maxDate: undefined,
+    language: "ru"
   };
 
   Display.prototype.filtersMap = {
@@ -192,7 +241,7 @@
     "daterange": DateRangeFilter,
     "multiselect": MultiselectFilter
   };
-  Display.prototype.filters = [];
+  Display.prototype.filters = {};
   Display.prototype.filtersTimeout = 0;
   Display.prototype.initFilter = function() {
     var that = this;
@@ -205,7 +254,7 @@
       clearTimeout(that.filtersTimeout);
       that.filtersTimeout = setTimeout(function() {
         that.grid.filter = {};
-        $.each(that.filters, function(index, filter) {
+        $.each(that.filters, function(name, filter) {
           that.grid.filter[filter.field] = filter.getValue();
         });
         that.grid.pageIndex = 1;
@@ -213,21 +262,46 @@
       }, 100);
     };
 
-    if (this.grid.settings.filterable) {
-      var filterContainer = $("<div>")
-        .addClass("bootstrap-grid-filter");
-      this.toolbar.append(filterContainer);
+    var filterContainer = $("<div class='bootstrap-grid-filter'>"),
+      filterSelect = $("<select multiple>");
 
-      $.each(this.grid.settings.filters, function(index, filterSettings) {
-        if (filterSettings.field) {
-          var Filter = that.filtersMap[filterSettings.type];
+    filterContainer.append(filterSelect);
+    this.toolbar.append(filterContainer);
 
-          if (Filter) {
-            var filter = new Filter(filterSettings, filterContainer, onFilterChange);
-            that.filters.push(filter);
+    $.each(this.grid.settings.filters, function(index, filterSettings) {
+      if (filterSettings.field) {
+        var Filter = that.filtersMap[filterSettings.type];
+
+        if (Filter) {
+          var filter = new Filter(filterSettings, filterContainer, onFilterChange);
+          that.filters[filterSettings.field] = filter;
+
+          var filterSelectOption = $("<option value='" + filterSettings.field + "'>" + filterSettings.title + "</option>");
+          if (filterSettings.visible) {
+            filterSelectOption.attr("selected", "selected");
+          } else {
+            filter.hide();
           }
+          filterSelect.append(filterSelectOption);
+        }
+      }
+    });
+
+    filterSelect.change(function() {
+        $("option:selected", filterSelect).each(function() {
+          that.filters[$(this).val()].show();
+        });
+        $("option:not(:selected)", filterSelect).each(function() {
+          that.filters[$(this).val()].hide();
+        });
+
+        onFilterChange();
+      })
+      .multiselect({
+        templates: {
+          button: "<button type='button' class='multiselect dropdown-toggle' data-toggle='dropdown'><i class='icon-filter'></i></button>"
         }
       });
-    }
   };
-})(jQuery);
+})
+(jQuery);

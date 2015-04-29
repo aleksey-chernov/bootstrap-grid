@@ -1,29 +1,34 @@
 ﻿.bootstrap-grid {
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
+
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .bootstrap-grid-container {
-  margin-left: auto;
-  margin-right: auto;
   position: relative;
-  
+
+  margin-right: auto;
+  margin-left: auto;
+
   border: 1px solid #ddd;
+  border-radius: 4px;
+
   -ms-border-radius: 4px;
-      border-radius: 4px;
 }
 
 .bootstrap-grid-container table {
-  table-layout: fixed;
-  word-wrap: break-word;
   margin: 0;
+
+  table-layout: fixed;
+
+  word-wrap: break-word;
 
   border: 0;
   border-bottom: 1px solid #ddd;
+  border-radius: 0;
 
   -ms-border-radius: 0;
-      border-radius: 0;
 }
 
 .bootstrap-grid-container table th { vertical-align: middle; }
@@ -31,61 +36,83 @@
 .bootstrap-grid-container th:first-child,
 .bootstrap-grid-container td:first-child {
   border-left: 0 !important;
+  border-bottom-left-radius: 0 !important;
 
   -ms-border-bottom-left-radius: 0 !important;
-      border-bottom-left-radius: 0 !important;
 }
 
-.bootstrap-grid-header { 
+.bootstrap-grid-header {
   overflow: hidden;
+
   font-size: 11px;
 }
 
-.bootstrap-grid-header table {
-  table-layout: fixed;
+.bootstrap-grid-header .th {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
   word-wrap: break-word;
+
+  font-size: 1.1em;
+
+  -moz-text-overflow: ellipsis;
+}
+
+.bootstrap-grid-header th:hover .th { text-decoration: underline; }
+
+.bootstrap-grid-header .th i { vertical-align: sub; }
+
+.bootstrap-grid-header table {
   margin: 0;
+
+  table-layout: fixed;
+
+  word-wrap: break-word;
 }
 
 .bootstrap-grid-body {
-  height: 100%;
-  overflow: auto;
   position: relative;
+
+  overflow: auto;
+
+  height: 100%;
+
   font-size: 11px;
 }
 
 .bootstrap-grid-pagination {
   height: 50px;
-  margin: 5px;
-  margin-bottom: 0;
+  margin: 5px 5px 0;
 }
 
-.bootstrap-grid-pagination select {
-  display: block;
+.bootstrap-grid-pagination .pager {
   float: left;
+
+  margin: 0;
+}
+
+.pager select {
   width: auto;
+
+  vertical-align: baseline;
 }
 
 .bootstrap-grid-pagination .pagination {
   float: right;
+
   margin: 0;
 }
 
-.bootstrap-grid-toolbar {
-  margin: 5px;
-  margin-top: 0;
+.bootstrap-grid-toolbar { margin: 0 5px 5px; }
+
+.bootstrap-grid-filter {
+  float: left;
+
+  width: 80%;
 }
 
-.bootstrap-grid-contextmenu {
-  position: absolute;
-  display: none;
-  z-index: 300;
-}
+.bootstrap-grid-tools {
+  float: right;
 
-.bootstrap-grid-contextmenu ul {
-  position: static;
-  display: block;
-  z-index: 300;
+  width: 20%;
 }
-
-.bootstrap-grid-contextmenu a { cursor: pointer; }

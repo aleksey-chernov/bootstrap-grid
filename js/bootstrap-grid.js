@@ -75,17 +75,25 @@
     pageLinks: 5,
     onRowDisplay: function(row, item) {
       return false;
+    },
+    onCellHoverIn: function(cell, item, field) {
+      return false;
+    },
+    onCellHoverOut: function(cell, item, field) {
+      return false;
     }
   };
   Grid.defaultColumn = {
     field: undefined,
     title: undefined,
     width: 0,
-    sortable: false,
+    sortable: true,
     visible: true
   };
   Grid.locales = {
-    filterPlaceholder: "Поиск"
+    filterPlaceholder: "Поиск",
+    pagerShow: "Показать",
+    pagerEntry: "записи(ей)"
   };
   Grid.prototype.init = function() {
     this.display.init();
@@ -171,28 +179,23 @@
 
   Display.prototype.init = function() {
     var that = this;
-    this.root = $("<div>")
-      .addClass("bootstrap-grid");
 
-    this.toolbar = $("<div>")
-      .addClass("bootstrap-grid-toolbar clearfix");
+    this.root = $("<div class='bootstrap-grid'>");
+
+    this.toolbar = $("<div class='bootstrap-grid-toolbar clearfix'>");
     this.initToolbar();
+    this.tools = $("<div class='bootstrap-grid-tools'>");
 
-    this.pagination = $("<div>")
-      .addClass("bootstrap-grid-pagination clearfix");
-
-    this.container = $("<div>")
-      .addClass("bootstrap-grid-container");
-
-    this.head = $("<div>")
-      .addClass("bootstrap-grid-header");
-
-    this.body = $("<div>")
-      .addClass("bootstrap-grid-body")
+    this.container = $("<div class='bootstrap-grid-container'>");
+    this.head = $("<div class='bootstrap-grid-header'>");
+    this.body = $("<div class='bootstrap-grid-body'>")
       .scroll(function() {
         that.head.scrollLeft(that.body.scrollLeft());
       });
 
+    this.pagination = $("<div class='bootstrap-grid-pagination clearfix'>");
+
+    this.toolbar.append(this.tools);
     this.container
       .append(this.head)
       .append(this.body);
@@ -212,50 +215,63 @@
     }
   };
   Display.prototype.initFilter = function() {
-    var that = this;
+    var that = this,
+      timeout,
+      input = $("<input class='input-medium search-query' type='text' placeholder='" + Grid.locales.filterPlaceholder + "'>");
 
-    var input = $("<input type='text'>")
-      .addClass("input-medium search-query")
-      .attr("placeholder", Grid.locales.filterPlaceholder);
-
-    var timeout;
     input.on("propertychange change keyup paste input", function() {
-      clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        that.grid.filter = input.val();
-        that.grid.getData();
-      }, 200);
-    });
-
-    this.toolbar.append(input);
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+          that.grid.filter = input.val();
+          that.grid.getData();
+        }, 200);
+      })
+      .placeholder()
+      .appendTo(this.toolbar);
   };
   Display.prototype.drawHead = function() {
     $("table", this.header)
       .remove();
 
-    var table = $("<table>");
+    var table = $("<table>"),
+      thead = $("<thead>"),
+      tr = $("<tr>");
     if (this.grid.settings.tableStyle) {
       table.addClass(this.grid.settings.tableStyle);
     }
 
-    var thead = $("<thead>");
-    var tr = $("<tr>");
-
     var that = this;
     $.each(this.grid.settings.columns, function(index, col) {
       if (col.visible) {
-        tr.append($("<th>")
-          .css("cursor", "pointer")
+        var th = $("<th>")
           .css("width", col.width)
-          .html("<div>" + col.title + "<div/>")
-          .click({ orderBy: col.field, grid: that.grid }, function(event) {
-            event.data.grid.setOrderBy(event.data.orderBy);
-            event.data.grid.getData();
-          }));
+          .html("<div class='th'>" + col.title + "</div>");
+
+        if (that.grid.orderBy && col.field === that.grid.orderBy.name) {
+          $("div", th).append(that.grid.orderBy.dir === "desc"
+            ? $("<i class='icon-arrow-up'>")
+            : $("<i class='icon-arrow-down'>"));
+        }
+
+        if (col.sortable) {
+          th.css("cursor", "pointer")
+            .click({ orderBy: col.field, grid: that.grid }, function(event) {
+              $(".th i", tr).remove();
+
+              event.data.grid.setOrderBy(event.data.orderBy);
+              event.data.grid.getData();
+
+              $("div", th).append(event.data.grid.orderBy.dir === "desc"
+                ? $("<i class='icon-arrow-up'>")
+                : $("<i class='icon-arrow-down'>"));
+            });
+        }
+
+        tr.append(th);
       }
     });
-    thead.append(tr);
 
+    thead.append(tr);
     table.append(thead);
     this.head.append(table);
 
@@ -273,7 +289,6 @@
 
     var table = $("table", this.head).clone()
       .css("margin-top", -this.head.outerHeight());
-
     var tbody = $("<tbody>");
 
     var that = this;
@@ -283,8 +298,25 @@
 
       $.each(that.grid.settings.columns, function(index, col) {
         if (col.visible) {
-          $("<td>").text(item[col.field])
+          var td = $("<td>").text(item[col.field])
             .appendTo(tr);
+
+          if (that.grid.settings.onCellHoverIn || that.grid.settings.onCellHoverOut) {
+            if (that.grid.settings.onCellHoverIn) {
+              td.mouseenter(function() {
+                if (that.grid.settings.onCellHoverIn) {
+                  that.grid.settings.onCellHoverIn.call(null, td, col.field, item);
+                }
+              });
+            }
+            if (that.grid.settings.onCellHoverOut) {
+              td.mouseleave(function() {
+                if (that.grid.settings.onCellHoverOut) {
+                  that.grid.settings.onCellHoverOut.call(null, td, col.field, item);
+                }
+              });
+            }
+          }
         }
       });
 
@@ -315,7 +347,8 @@
 
     var that = this;
 
-    var selector = $("<select>");
+    var pager = $("<div class='pager'>"),
+      selector = $("<select>");
     $.each(this.grid.settings.pageList, function(index, length) {
       var option = $("<option>").val(length.size)
         .text(length.name);
@@ -331,9 +364,11 @@
       that.grid.pageSize = $(this).val();
       that.grid.getData();
     });
+    pager.append($("<span>" + Grid.locales.pagerShow + " </span>"))
+      .append(selector)
+      .append($("<span> " + Grid.locales.pagerEntry + "</span>"));
 
-    var pagination = $("<div>")
-      .addClass("pagination");
+    var pagination = $("<div class='pagination'>");
     var list = $("<ul>").appendTo(pagination);
     $.each(this.grid.pages, function(index, page) {
       var li = $("<li>").append(
@@ -351,7 +386,7 @@
     });
 
     this.pagination
-      .append(selector)
+      .append(pager)
       .append(pagination);
   };
 
@@ -379,8 +414,19 @@
       var grid = $(this).data("bootstrap-grid");
 
       if (grid) {
+        grid.display.container.outerHeight(grid.settings.height -
+          grid.display.toolbar.outerHeight(true) -
+          grid.display.pagination.outerHeight(true));
+
         grid.display.drawHead();
         grid.display.drawBody();
+      }
+    },
+    setOption: function(option, value) {
+      var grid = $(this).data("bootstrap-grid");
+
+      if (grid) {
+        grid.settings[option] = value;
       }
     }
   };
