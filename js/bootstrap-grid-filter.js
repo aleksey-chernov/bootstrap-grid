@@ -9,6 +9,14 @@
       .on("input", onChange)
       .appendTo(container)
       .placeholder();
+
+    if (navigator.userAgent.indexOf("MSIE") !== -1) {
+      this.input.keyup(function (e) {
+        var charCode = e.which || e.keyCode;
+        if (!((charCode === 9) || (charCode === 16)))
+          onChange();
+      });
+    }
   };
 
   TextFilter.prototype.getValue = function () {
@@ -259,13 +267,17 @@
         });
         that.grid.pageIndex = 1;
         that.grid.getData();
-      }, 100);
+      }, that.grid.settings.filterTimeout);
     };
 
-    var filterContainer = $("<div class='bootstrap-grid-filter'>"),
+    var filterContainer = $("<div class='bootstrap-grid-filter clearfix'>"),
+      filterSelectContainer = $("<div class='filter-select-container'>"),
+      filterInputContainer = $("<div class='filter-input-container'>"),
       filterSelect = $("<select multiple>");
 
-    filterContainer.append(filterSelect);
+    filterSelectContainer.append(filterSelect);
+    filterContainer.append(filterSelectContainer)
+      .append(filterInputContainer);
     this.toolbar.append(filterContainer);
 
     $.each(this.grid.settings.filters, function(index, filterSettings) {
@@ -273,7 +285,7 @@
         var Filter = that.filtersMap[filterSettings.type];
 
         if (Filter) {
-          var filter = new Filter(filterSettings, filterContainer, onFilterChange);
+          var filter = new Filter(filterSettings, filterInputContainer, onFilterChange);
           that.filters[filterSettings.field] = filter;
 
           var filterSelectOption = $("<option value='" + filterSettings.field + "'>" + filterSettings.title + "</option>");

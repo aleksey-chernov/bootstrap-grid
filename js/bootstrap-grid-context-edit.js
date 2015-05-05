@@ -58,7 +58,7 @@
     var display = this;
 
     if (this.grid.settings.editableContext) {
-      $(display.body).on("contextmenu", "tr", {
+      $(display.body).on("contextmenu", "tr:not(.empty-row)", {
         display: display
       }, onContextMenu);
       

@@ -13,8 +13,6 @@
 
   border: 1px solid #ddd;
   border-radius: 4px;
-
-  -ms-border-radius: 4px;
 }
 
 .bootstrap-grid-container table {
@@ -27,8 +25,6 @@
   border: 0;
   border-bottom: 1px solid #ddd;
   border-radius: 0;
-
-  -ms-border-radius: 0;
 }
 
 .bootstrap-grid-container table th { vertical-align: middle; }
@@ -37,8 +33,6 @@
 .bootstrap-grid-container td:first-child {
   border-left: 0 !important;
   border-bottom-left-radius: 0 !important;
-
-  -ms-border-bottom-left-radius: 0 !important;
 }
 
 .bootstrap-grid-header {
@@ -47,15 +41,15 @@
   font-size: 11px;
 }
 
-.bootstrap-grid-header .th {
+.bootstrap-grid-header .th,
+.bootstrap-grid-body .th {
   overflow: hidden;
-
+  
+  -moz-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  word-wrap: break-word;
+  word-wrap: normal;
 
   font-size: 1.1em;
-
-  -moz-text-overflow: ellipsis;
 }
 
 .bootstrap-grid-header th:hover .th { text-decoration: underline; }
@@ -115,4 +109,27 @@
   float: right;
 
   width: 20%;
+}
+
+.bootstrap-grid-loading {
+  position: absolute;
+  z-index: 99;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: none;
+
+  background: #fff;
+}
+
+.bootstrap-grid-loading p {
+  margin-top: 10px;
+
+  text-align: center;
+}
+
+.empty-row td {
+  text-align: center;
 }

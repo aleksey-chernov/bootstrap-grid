@@ -52,7 +52,9 @@
     url: undefined,
     columns: [],
     filterable: false,
+    filterTimeout: 500,
     height: 400,
+    rowHeight: undefined,
     tableStyle: "table table-hover",
     pageList: [
       {
@@ -76,24 +78,22 @@
     onRowDisplay: function(row, item) {
       return false;
     },
-    onCellHoverIn: function(cell, item, field) {
-      return false;
-    },
-    onCellHoverOut: function(cell, item, field) {
-      return false;
-    }
-  };
+    loading: undefined
+};
   Grid.defaultColumn = {
     field: undefined,
     title: undefined,
     width: 0,
     sortable: true,
-    visible: true
+    visible: true,
+    formatter: undefined
   };
   Grid.locales = {
     filterPlaceholder: "Поиск",
     pagerShow: "Показать",
-    pagerEntry: "записи(ей)"
+    pagerEntry: "записи(ей)",
+    loading: "Загрузка...",
+    emptyRow: "Ничего не найдено."
   };
   Grid.prototype.init = function() {
     this.display.init();
@@ -110,7 +110,9 @@
       }
     }
   };
-  Grid.prototype.getData = function() {
+  Grid.prototype.getData = function () {
+    this.display.loading.fadeIn("fast");
+
     var data = {
       pageIndex: this.pageIndex,
       pageSize: this.pageSize
@@ -130,8 +132,11 @@
       success: function(data) {
         this.data = data;
         this.initPagination(data);
+        
         this.display.drawBody();
         this.display.drawPagination();
+
+        this.display.loading.fadeOut("fast");
       }
     });
   };
@@ -192,10 +197,17 @@
       .scroll(function() {
         that.head.scrollLeft(that.body.scrollLeft());
       });
-
+    this.loading = $("<div class='bootstrap-grid-loading'>");
+    if (this.grid.settings.loading) {
+      this.loading.append(this.grid.settings.loading);
+    } else {
+      this.loading.append("<p>" + Grid.locales.loading + "</p>");
+    }
+    
     this.pagination = $("<div class='bootstrap-grid-pagination clearfix'>");
 
     this.toolbar.append(this.tools);
+    this.body.append(this.loading);
     this.container
       .append(this.head)
       .append(this.body);
@@ -219,15 +231,25 @@
       timeout,
       input = $("<input class='input-medium search-query' type='text' placeholder='" + Grid.locales.filterPlaceholder + "'>");
 
-    input.on("propertychange change keyup paste input", function() {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-          that.grid.filter = input.val();
-          that.grid.getData();
-        }, 200);
-      })
+    var onSearch = function() {
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        that.grid.filter = input.val();
+        that.grid.getData();
+      }, that.grid.filterTimeout);
+    };
+
+    input.on("input", onSearch)
       .placeholder()
       .appendTo(this.toolbar);
+    
+    if (navigator.userAgent.indexOf("MSIE") !== -1) {
+      this.input.keyup(function (e) {
+        var charCode = e.which || e.keyCode;
+        if (!((charCode === 9) || (charCode === 16)))
+          onSearch();
+      });
+    }
   };
   Display.prototype.drawHead = function() {
     $("table", this.header)
@@ -292,40 +314,39 @@
     var tbody = $("<tbody>");
 
     var that = this;
-    $.each(this.grid.data.items, function(index, item) {
-      var tr = $("<tr>")
-        .data("item", item);
 
-      $.each(that.grid.settings.columns, function(index, col) {
-        if (col.visible) {
-          var td = $("<td>").text(item[col.field])
-            .appendTo(tr);
+    if (this.grid.data.totalItems === 0) {
+      tbody.append("<tr class='empty-row'><td colspan='" + this.grid.settings.columns.length + "'>" + Grid.locales.emptyRow + "</td></tr>");
+    } else {
+      $.each(this.grid.data.items, function(index, item) {
+        var tr = $("<tr>")
+          .data("item", item);
 
-          if (that.grid.settings.onCellHoverIn || that.grid.settings.onCellHoverOut) {
-            if (that.grid.settings.onCellHoverIn) {
-              td.mouseenter(function() {
-                if (that.grid.settings.onCellHoverIn) {
-                  that.grid.settings.onCellHoverIn.call(null, td, col.field, item);
-                }
-              });
+        $.each(that.grid.settings.columns, function(index, col) {
+          if (col.visible) {
+            var td = $("<td>");
+
+            if (col.formatter) {
+              td.html(col.formatter(item[col.field], item));
+            } else {
+              td.text(item[col.field]);
             }
-            if (that.grid.settings.onCellHoverOut) {
-              td.mouseleave(function() {
-                if (that.grid.settings.onCellHoverOut) {
-                  that.grid.settings.onCellHoverOut.call(null, td, col.field, item);
-                }
-              });
+
+            if (that.grid.settings.rowHeight) {
+              td.height(that.grid.settings.rowHeight);
             }
+
+            td.appendTo(tr);
           }
+        });
+
+        tbody.append(tr);
+
+        if (that.grid.settings.onRowDisplay) {
+          that.grid.settings.onRowDisplay.call(null, tr, item);
         }
       });
-
-      tbody.append(tr);
-
-      if (that.grid.settings.onRowDisplay) {
-        that.grid.settings.onRowDisplay.call(null, tr, item);
-      }
-    });
+    }
 
     table.append(tbody);
     this.body.append(table);
