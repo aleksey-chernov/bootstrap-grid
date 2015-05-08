@@ -112,6 +112,7 @@
   };
   Grid.prototype.getData = function () {
     this.display.loading.fadeIn("fast");
+    this.display.clearBody();
 
     var data = {
       pageIndex: this.pageIndex,
@@ -409,6 +410,9 @@
     this.pagination
       .append(pager)
       .append(pagination);
+  };
+  Display.prototype.clearBody = function() {
+    $("tr td", this.body).remove();
   };
 
   var methods = {
