@@ -130,7 +130,7 @@
       url: this.settings.url,
       data: data,
       context: this,
-      success: function(data) {
+      success: function (data) {
         this.data = data;
         this.initPagination(data);
         
@@ -434,6 +434,8 @@
       if (grid) {
         grid.getData();
       }
+
+      return this;
     },
     redraw: function() {
       var grid = $(this).data("bootstrap-grid");
@@ -446,6 +448,8 @@
         grid.display.drawHead();
         grid.display.drawBody();
       }
+
+      return this;
     },
     setOption: function(option, value) {
       var grid = $(this).data("bootstrap-grid");
@@ -453,6 +457,8 @@
       if (grid) {
         grid.settings[option] = value;
       }
+
+      return this;
     }
   };
 
