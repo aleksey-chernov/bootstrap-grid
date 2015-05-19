@@ -42,7 +42,7 @@
     this.data = [];
     this.pages = [];
     this.pageIndex = 1;
-    this.pageSize = this.settings.pageList[0].size;
+    this.pageSize = this.settings.pageable ? this.settings.pageList[0].size : undefined;
     this.orderBy = undefined;
     this.filter = undefined;
     this.scroll = undefined;
@@ -51,11 +51,13 @@
   Grid.defaultSettings = {
     url: undefined,
     columns: [],
-    filterable: false,
-    filterTimeout: 500,
+    width: "auto",
     height: 400,
     rowHeight: undefined,
     tableStyle: "table table-hover",
+    filterable: false,
+    filterTimeout: 500,
+    pageable: true,
     pageList: [
       {
         name: 10,
@@ -132,10 +134,12 @@
       context: this,
       success: function (data) {
         this.data = data;
-        this.initPagination(data);
-        
         this.display.drawBody();
-        this.display.drawPagination();
+
+        if(this.settings.pageable) {
+          this.initPagination(data);
+          this.display.drawPagination();
+        }
 
         this.display.loading.fadeOut("fast");
       }
@@ -144,7 +148,7 @@
   Grid.prototype.initPagination = function(data) {
     this.pages.length = 0;
 
-    if (data.totalItems === 0 || this.pageSize === -1)
+    if (data.totalItems === 0 || !this.pageSize)
       return;
 
     var totalPages = Math.ceil(data.totalItems / this.pageSize);
@@ -186,7 +190,8 @@
   Display.prototype.init = function() {
     var that = this;
 
-    this.root = $("<div class='bootstrap-grid'>");
+    this.root = $("<div class='bootstrap-grid'>")
+      .width(this.grid.settings.width);
 
     this.toolbar = $("<div class='bootstrap-grid-toolbar clearfix'>");
     this.initToolbar();
@@ -253,7 +258,7 @@
     }
   };
   Display.prototype.drawHead = function() {
-    $("table", this.header)
+    $("table", this.head)
       .remove();
 
     var table = $("<table>"),
@@ -417,7 +422,7 @@
 
   var methods = {
     init: function(options) {
-      var settings = $.extend(Grid.defaultSettings, options);
+      var settings = $.extend({}, Grid.defaultSettings, options);
       $.each(settings.columns, function(index, value) {
         settings.columns[index] = $.extend({}, Grid.defaultColumn, value);
       });

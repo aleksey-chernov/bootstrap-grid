@@ -249,10 +249,12 @@
     "daterange": DateRangeFilter,
     "multiselect": MultiselectFilter
   };
-  Display.prototype.filters = {};
-  Display.prototype.filtersTimeout = 0;
+
   Display.prototype.initFilter = function() {
     var that = this;
+
+    this.filters = {};
+    this.filtersTimeout = 0;
 
     $.each(this.grid.settings.filters, function(index, filterSettings) {
       that.grid.settings.filters[index] = $.extend({}, that.grid.defaultFilter, filterSettings);

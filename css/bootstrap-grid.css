@@ -1,6 +1,7 @@
 ﻿.bootstrap-grid {
   position: relative;
 
+  display: inline-block;
   margin-right: auto;
   margin-left: auto;
 }

@@ -11,5 +11,6 @@
 }
 
 .filter-input-container {
+  min-height: 35px;
   padding-left: 50px;
 }
