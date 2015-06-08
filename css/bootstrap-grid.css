@@ -112,6 +112,16 @@
   width: 20%;
 }
 
+.bootstrap-grid-export .dropdown-menu  {
+  min-width: 100px;
+}
+
+.bootstrap-grid-export {
+  float:right;
+
+  margin-top: 5px;
+}
+
 .bootstrap-grid-loading {
   position: absolute;
   z-index: 99;

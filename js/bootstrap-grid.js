@@ -77,6 +77,20 @@
       }
     ],
     pageLinks: 5,
+    exportable: false,
+    onExport: function(format, orderBy, filter) {
+      return false;
+    },
+    exportList: [
+      {
+        name: "Excel",
+        type: "xls"
+      },
+      {
+        name: "PDF",
+        type: "pdf"
+      }
+    ],
     onRowDisplay: function(row, item) {
       return false;
     },
@@ -231,6 +245,10 @@
     if (this.grid.settings.filterable) {
       this.initFilter();
     }
+
+    if(this.grid.settings.exportable) {
+      this.initExport();
+    }
   };
   Display.prototype.initFilter = function() {
     var that = this,
@@ -254,6 +272,38 @@
         var charCode = e.which || e.keyCode;
         if (!((charCode === 9) || (charCode === 16)))
           onSearch();
+      });
+    }
+  };
+  Display.prototype.initExport = function() {
+    var that = this,
+      exportDropdown = $("<div class='bootstrap-grid-export btn-group'>"),
+      exportButton = $("<button class='btn dropdown-toggle' data-toggle='dropdown'>" +
+      "<i class='icon-share'></i></button>"),
+      exportMenu = $("<ul class='dropdown-menu'>");
+
+    this.toolbar.append(exportDropdown);
+    exportDropdown.append(exportButton)
+      .append(exportMenu);
+
+    if(this.grid.settings.exportList) {
+      $.each(this.grid.settings.exportList, function(index, item) {
+        var li = $("<li>");
+        var exportType = $("<a href='#'>" + item.name + "</a>").click(function() {
+          var orderBy, filter;
+
+          if (that.grid.orderBy)
+            orderBy = that.grid.orderBy.dir
+              ? that.grid.orderBy.name + " " + that.grid.orderBy.dir
+              : that.grid.orderBy.name;
+
+          if (that.grid.filter)
+            filter = JSON.stringify(that.grid.filter);
+
+          that.grid.settings.onExport.call(null, item.type, orderBy, filter);
+        });
+        exportMenu.append(li);
+        li.append(exportType);
       });
     }
   };
