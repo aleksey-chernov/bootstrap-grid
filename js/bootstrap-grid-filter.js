@@ -237,7 +237,7 @@
     url: undefined,
     type: "text",
     visible: false,
-    format: "DD.MM.YYYY",
+    format: "dd.mm.yyyy",
     minDate: undefined,
     maxDate: undefined,
     language: "ru"
