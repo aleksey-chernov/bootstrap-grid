@@ -94,6 +94,7 @@
     onRowDisplay: function(row, item) {
       return false;
     },
+    onBodyShown: undefined,
     loading: undefined
 };
   Grid.defaultColumn = {
@@ -406,6 +407,10 @@
 
     table.append(tbody);
     this.body.append(table);
+
+    if (this.grid.settings.onBodyShown) {
+      this.grid.settings.onBodyShown.call(null);
+    }
 
     if (this.body[0].scrollHeight > this.body[0].clientHeight) {
       this.head.css("margin-right", getScrollBarWidth());
