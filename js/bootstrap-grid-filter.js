@@ -170,6 +170,8 @@
           .change(onChange)
           .multiselect("destroy")
           .multiselect({
+            includeSelectAllOption: settings.selectAll,
+            selectAllText: Grid.locales.multiselectAll,
             maxHeight: 200,
             buttonWidth: "180px",
             buttonContainer: "<div class='btn-group'>",
@@ -225,7 +227,8 @@
     dateRangeApply: "Применить",
     dateRangeCancel: "Отмена",
     dateRangeMonthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
-    multiselectLoad: "Загрузка..."
+    multiselectLoad: "Загрузка...",
+    multiselectAll: "Выбрать все"
   });
 
   var Display = $.fn.bootstrapGrid.display,
@@ -240,7 +243,8 @@
     format: "dd.mm.yyyy",
     minDate: undefined,
     maxDate: undefined,
-    language: "ru"
+    language: "ru",
+    selectAll: false
   };
 
   Display.prototype.filtersMap = {
