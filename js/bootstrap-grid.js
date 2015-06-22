@@ -51,6 +51,7 @@
   Grid.defaultSettings = {
     url: undefined,
     columns: [],
+    refreshable: false,
     width: "auto",
     height: 400,
     rowHeight: undefined,
@@ -208,9 +209,14 @@
     this.root = $("<div class='bootstrap-grid'>")
       .width(this.grid.settings.width);
 
-    this.toolbar = $("<div class='bootstrap-grid-toolbar clearfix'>");
+    this.toolbar = $(
+        "<div class='bootstrap-grid-toolbar clearfix'>" +
+          "<div class='bootstrap-grid-tools-container'>" +
+            "<div class='bootstrap-grid-tools'></div>" +
+          "</div>" +
+        "</div>");
+    this.tools = this.toolbar.find(".bootstrap-grid-tools");
     this.initToolbar();
-    this.tools = $("<div class='bootstrap-grid-tools'>");
 
     this.container = $("<div class='bootstrap-grid-container'>");
     this.head = $("<div class='bootstrap-grid-header'>");
@@ -227,7 +233,6 @@
     
     this.pagination = $("<div class='bootstrap-grid-pagination clearfix'>");
 
-    this.toolbar.append(this.tools);
     this.body.append(this.loading);
     this.container
       .append(this.head)
@@ -238,6 +243,7 @@
 
     this.el.append(this.root);
 
+
     this.container.outerHeight(this.grid.settings.height -
       this.toolbar.outerHeight(true) -
       this.pagination.outerHeight(true));
@@ -247,7 +253,11 @@
       this.initFilter();
     }
 
-    if(this.grid.settings.exportable) {
+    if (this.grid.settings.refreshable) {
+      this.initRefresh();
+    }
+
+    if (this.grid.settings.exportable) {
       this.initExport();
     }
   };
@@ -276,14 +286,26 @@
       });
     }
   };
+  Display.prototype.initRefresh = function() {
+    var that = this,
+        refreshBtn = $("<button class='btn bootstrap-grid-tool'><i class='icon-refresh'></i></button>");
+
+    refreshBtn.click(function() {
+      that.grid.getData();
+    });
+
+    this.tools.append(refreshBtn);
+  };
   Display.prototype.initExport = function() {
     var that = this,
-      exportDropdown = $("<div class='bootstrap-grid-export btn-group'>"),
-      exportButton = $("<button class='btn dropdown-toggle' data-toggle='dropdown'>" +
-      "<i class='icon-share'></i></button>"),
+      exportDropdown = $("<div class='btn-group bootstrap-grid-export bootstrap-grid-tool'>"),
+      exportButton = $(
+          "<button class='btn dropdown-toggle' data-toggle='dropdown'>" +
+            "<i class='icon-share'></i>" +
+          "</button>"),
       exportMenu = $("<ul class='dropdown-menu'>");
 
-    this.toolbar.append(exportDropdown);
+    this.tools.append(exportDropdown);
     exportDropdown.append(exportButton)
       .append(exportMenu);
 

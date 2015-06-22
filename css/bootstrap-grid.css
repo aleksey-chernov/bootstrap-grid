@@ -106,20 +106,25 @@
   width: 80%;
 }
 
-.bootstrap-grid-tools {
+.bootstrap-grid-tools-container {
   float: right;
 
+  margin-top: 5px;
   width: 20%;
+}
+
+.bootstrap-grid-tools {
+  float: right;
+}
+
+.bootstrap-grid-tool {
+  display: inline-block;
+
+  margin-left: 5px;
 }
 
 .bootstrap-grid-export .dropdown-menu  {
   min-width: 100px;
-}
-
-.bootstrap-grid-export {
-  float:right;
-
-  margin-top: 5px;
 }
 
 .bootstrap-grid-loading {
