@@ -150,10 +150,9 @@
   function MultiselectFilter(settings, container, onChange) {
     this.field = settings.field;
 
-    this.input = $("<select class='input-medium search-query' multiple>")
+    this.input = $("<select class='bootstrap-grid-col-select' multiple>")
       .appendTo(container)
       .multiselect({
-        buttonWidth: "150px",
         buttonText: function() { return Grid.locales.multiselectLoad; }
       });
 

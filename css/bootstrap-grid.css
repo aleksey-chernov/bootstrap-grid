@@ -127,6 +127,16 @@
   min-width: 100px;
 }
 
+.bootstrap-grid-col-select .dropdown-menu  {
+  max-width: 200px;
+}
+
+.bootstrap-grid-col-select .checkbox {
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
 .bootstrap-grid-loading {
   position: absolute;
   z-index: 99;
