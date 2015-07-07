@@ -436,7 +436,12 @@
     var that = this;
 
     if (this.grid.data.totalItems === 0) {
-      tbody.append("<tr class='empty-row'><td colspan='" + this.grid.settings.columns.length + "'>" + Grid.locales.emptyRow + "</td></tr>");
+      var visibleColCount = 0;
+      $.each(this.grid.settings.columns, function (index, col) {
+        if (col.visible && !col.hidden) visibleColCount++;
+      });
+
+      tbody.append("<tr class='empty-row'><td colspan='" + visibleColCount + "'>" + Grid.locales.emptyRow + "</td></tr>");
     } else {
       $.each(this.grid.data.items, function (index, item) {
         var tr = $("<tr>")
