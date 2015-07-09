@@ -119,8 +119,8 @@
         }
       })
       .on("apply.daterangepicker", function(event, picker) {
-        that.startDate = picker.startDate.format("YYYY-MM-DD");
-        that.endDate = picker.endDate.format("YYYY-MM-DD");
+        that.startDate = picker.startDate.format("YYYY-MM-DD 00:00:00");
+        that.endDate = picker.endDate.format("YYYY-MM-DD 23:59:59");
         onChange();
       })
       .on("cancel.daterangepicker", function() {

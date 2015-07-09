@@ -308,14 +308,13 @@
     });
 
     colSelect.change(function () {
-      $("option", colSelect).each(function () {
-        var $this = $(this);
-        if ($this.attr("selected")) {
-          $this.data("column").visible = true;
-        } else {
-          $this.data("column").visible = false;
-        }
+      $("option:selected", colSelect).each(function() {
+        $(this).data("column").visible = true;
       });
+      $("option:not(:selected)", colSelect).each(function() {
+        $(this).data("column").visible = false;
+      });
+
       that.drawHead();
       that.drawBody();
     }).multiselect({
