@@ -421,10 +421,6 @@
       .height(this.body.height() - this.head.height());
   };
   Display.prototype.drawBody = function () {
-    this.grid.scroll = {
-      left: this.body.scrollLeft(),
-      top: this.body.scrollTop()
-    };
 
     $("table", this.body).remove();
 
@@ -485,11 +481,7 @@
       this.head.css("margin-right", 0);
     }
 
-    if (this.grid.scroll) {
-      this.body
-        .scrollLeft(this.grid.scroll.left)
-        .scrollTop(this.grid.scroll.top);
-    }
+    this.loadScroll();
   };
   Display.prototype.drawPagination = function () {
     $(this.pagination).empty();
@@ -539,7 +531,22 @@
       .append(pagination);
   };
   Display.prototype.clearBody = function () {
+    this.saveScroll();
+
     $("tr td", this.body).remove();
+  };
+  Display.prototype.saveScroll = function () {
+    this.grid.scroll = {
+      left: this.body.scrollLeft(),
+      top: this.body.scrollTop()
+    };
+  };
+  Display.prototype.loadScroll = function () {
+    if (this.grid.scroll) {
+      this.body
+        .scrollLeft(this.grid.scroll.left)
+        .scrollTop(this.grid.scroll.top);
+    }
   };
 
   var methods = {
