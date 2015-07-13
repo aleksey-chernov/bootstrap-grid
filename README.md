@@ -1,5 +1,7 @@
 # bootstrap-grid
-Simple datagrid for Bootstrap 2. Data source can be set only by providing remote server Url.
+This project purpose is educational in general, but result can be used, and actually used, in "real-life" projects.
+It provides simple, light datagrid for Bootstrap 2, and created as jQuery extension. Datagrid requests data from remote server in json format. It lacks a lot of features, but can be easily extended by plugins.
+If you think to use this stuff, you better look at https://github.com/wenzhixin/bootstrap-table. Because it is much better and well supported. I took some cool features from bootstrap-table, but tried to keep things simplier, because I do not need a ton of options for my grid.
 
 ## Grid options
 The default options are defined in jQuery.fn.bootstrapGrid.defaultSettings.
