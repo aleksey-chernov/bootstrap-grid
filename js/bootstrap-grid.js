@@ -80,9 +80,7 @@
     ],
     pageLinks: 5,
     exportable: false,
-    onExport: function (format, orderBy, filter) {
-      return false;
-    },
+    onExport: undefined,
     exportList: [
       {
         name: "Excel",
@@ -93,9 +91,7 @@
         type: "pdf"
       }
     ],
-    onRowDisplay: function (row, item) {
-      return false;
-    },
+    onRowDisplay: undefined,
     onBodyShown: undefined,
     loading: undefined
   };
