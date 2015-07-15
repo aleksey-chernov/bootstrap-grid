@@ -56,7 +56,7 @@ Localization values are defined in jQuery.fn.bootstrapGrid.locales.
  
 #bootstrap-grid extensions
 
-##bootstrap-grid filter
+##bootstrap-grid-filter
 Extends default filter behavior. Provides 4 possible filter types: text, date, daterange and multiselect.
 
 ## Grid options
@@ -88,7 +88,7 @@ Options defined in jQuery.fn.bootstrapGrid.locales are extended with:
 * **multiselectLoad** Set the multiselect filter loading text.
 * **multiselectAll** Set the multiselect filter select all option text.
 
-##bootstrap-grid filter
+##bootstrap-grid-contextmenu
 Extends the grid with the context menu and callbacks for the context menu events.
 
 ## Grid options
