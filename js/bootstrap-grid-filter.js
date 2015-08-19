@@ -169,6 +169,8 @@
           .change(onChange)
           .multiselect("destroy")
           .multiselect({
+            enableFiltering: settings.multiselectFiltering,
+            filterPlaceholder: Grid.locales.multiselectFilter,
             includeSelectAllOption: settings.selectAll,
             selectAllText: Grid.locales.multiselectAll,
             maxHeight: 200,
@@ -188,6 +190,14 @@
                 });
                 return labels.join(", ") + "";
               }
+            },
+            templates: {
+              filter: "<li class='multiselect-item filter'>" +
+              "<div class='input-group'>" +
+              "<input class='form-control multiselect-search' type='text'>" +
+              "</div>" +
+              "</li>",
+              filterClearBtn: ""
             }
           });
 
@@ -227,7 +237,8 @@
     dateRangeCancel: "Отмена",
     dateRangeMonthNames: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
     multiselectLoad: "Загрузка...",
-    multiselectAll: "Выбрать все"
+    multiselectAll: "Выбрать все",
+    multiselectFilter: "Поиск"
   });
 
   var Display = $.fn.bootstrapGrid.display,
@@ -243,7 +254,8 @@
     minDate: undefined,
     maxDate: undefined,
     language: "ru",
-    selectAll: false
+    selectAll: false,
+    multiselectFiltering: false
   };
 
   Display.prototype.filtersMap = {

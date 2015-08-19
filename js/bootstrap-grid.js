@@ -417,7 +417,6 @@
       .height(this.body.height() - this.head.height());
   };
   Display.prototype.drawBody = function () {
-
     $("table", this.body).remove();
 
     var table = $("table", this.head).clone()
@@ -575,6 +574,7 @@
         grid.display.toolbar.outerHeight(true) -
         grid.display.pagination.outerHeight(true));
 
+        grid.display.saveScroll();
         grid.display.drawHead();
         grid.display.drawBody();
       }
