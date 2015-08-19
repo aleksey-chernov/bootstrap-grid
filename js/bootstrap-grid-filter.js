@@ -244,7 +244,7 @@
   var Display = $.fn.bootstrapGrid.display,
     Grid = $.fn.bootstrapGrid.grid;
 
-  Grid.prototype.defaultFilter = {
+  Grid.defaultFilter = {
     field: undefined,
     title: undefined,
     url: undefined,
@@ -258,7 +258,7 @@
     multiselectFiltering: false
   };
 
-  Display.prototype.filtersMap = {
+  Display.filtersMap = {
     "text": TextFilter,
     "date": DateFilter,
     "daterange": DateRangeFilter,
@@ -272,7 +272,7 @@
     this.filtersTimeout = 0;
 
     $.each(this.grid.settings.filters, function(index, filterSettings) {
-      that.grid.settings.filters[index] = $.extend({}, that.grid.defaultFilter, filterSettings);
+      that.grid.settings.filters[index] = $.extend({}, Grid.defaultFilter, filterSettings);
     });
 
     var onFilterChange = function() {
@@ -299,7 +299,7 @@
 
     $.each(this.grid.settings.filters, function(index, filterSettings) {
       if (filterSettings.field) {
-        var Filter = that.filtersMap[filterSettings.type];
+        var Filter = Display.filtersMap[filterSettings.type];
 
         if (Filter) {
           var filter = new Filter(filterSettings, filterInputContainer, onFilterChange);
@@ -332,5 +332,7 @@
         }
       });
   };
+
+  $.fn.bootstrapGrid.defaultFilter = Grid.defaultFilter;
 })
 (jQuery);
